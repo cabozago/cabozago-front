@@ -8,16 +8,18 @@
                  
                   <v-card class="elevation-12">
                      <v-card-text>
-                        <v-form>
+                        <v-form ref="form" v-model="valid" lazy-validation>
                            <v-text-field
                               prepend-inner-icon="mdi-account"
-                              name="login"
-                              label="Login"
-                              type="text"
-                             
-                           ></v-text-field>
+                              v-model="email"
+                              :rules="emailRules"
+                              label="E-mail"
+                              required
+                            ></v-text-field>
                            <v-text-field
                               id="password"
+                              v-model="password"
+                              :rules="passwordRules"
                               prepend-inner-icon="mdi-lock"
                               name="password"
                               label="Password"
@@ -26,13 +28,29 @@
                            ></v-text-field>
                             
                         </v-form>
+                      
                      </v-card-text>
-                     <v-card-actions>
+                    
+                         <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn to="/Map">지도로</v-btn>
-                        <v-btn type="submit">로그인</v-btn>
-                       
-                     </v-card-actions>
+                        <v-btn
+                              :disabled="!valid"
+                              color="success"
+                              class="mr-4"
+                              @click="validate"
+                              to="/Map"
+                            >
+                              로그인
+                            </v-btn>
+
+                            <v-btn
+                              color="error"
+                              class="mr-4"
+                              @click="reset"
+                            >
+                              초기화
+                            </v-btn>
+                        </v-card-actions>
                   </v-card>
                </v-flex>
             </v-layout>
@@ -45,18 +63,35 @@
 <script>
 export default {
   name: 'Login',
-  methods:{},
+  methods:{
+    validate () {
+        this.$refs.form.validate()
+        console.log(this.email,this.password);
+      },
+      reset () {
+        this.$refs.form.reset()
+      },
+  
+  },
   computed:{
   
   },
   data(){
-    return{}
+    return{
+      valid: true,
+      email: '',
+      emailRules: [
+        v => !!v || '이메일을 입력해주세요!',
+        v => /.+@.+\..+/.test(v) || 'E-mail must be valid',
+      ],
+      password: '',
+      passwordRules: [
+        v => !!v || '패스워드를 입력해주세요!'
+      ],
+
+    }
   },
    props: { }
 }
 </script>
 
-<style lang="scss" src="@/assets/style.scss">
-
-
-</style>
